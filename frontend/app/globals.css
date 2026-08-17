@@ -2531,25 +2531,199 @@ img {
   margin-top: .4rem;
 }
 
-@media (max-width: 1024px) {
-  .booking-studio-body {
-    grid-template-columns: 1fr;
-    height: auto;
-    max-height: none;
-    overflow-y: auto !important;
-  }
+/* ==========================================================================
+   BOOKING STUDIO MOBILE & TABLET RESPONSIVE SYSTEM
+   ========================================================================== */
+@media (max-width: 900px) {
   .booking-studio-viewport {
-    height: auto;
-    max-height: none;
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .booking-studio-topbar {
+    padding: 0 1rem;
+    height: 52px;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+  .booking-top-brand {
+    gap: .7rem;
+  }
+  .booking-exit-link span {
+    display: none;
+  }
+  .booking-step-pills {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 58vw;
+    scrollbar-width: none;
+  }
+  .booking-step-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .step-pill {
+    padding: .25rem .5rem;
+    font-size: .56rem;
+    white-space: nowrap;
+  }
+  .booking-top-user {
+    display: none;
+  }
+  .booking-studio-body {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: calc(100dvh - 52px) !important;
+    max-height: none !important;
     overflow: visible !important;
+    padding-bottom: 120px !important; /* Space for mobile bottom booking dock */
   }
   .booking-studio-canvas {
-    overflow-y: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 1.2rem 1rem 1.5rem !important;
+    justify-content: flex-start !important;
   }
+  .booking-step-content {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    justify-content: flex-start !important;
+  }
+  .studio-step-pane {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    gap: 1.2rem;
+    justify-content: flex-start !important;
+  }
+  .studio-step-header h2 {
+    font-size: clamp(1.6rem, 5.5vw, 2.2rem);
+  }
+  .studio-service-grid {
+    grid-template-columns: 1fr !important;
+    gap: .65rem;
+    padding: 0;
+    margin: 0;
+  }
+  .studio-service-card {
+    padding: .9rem 1rem;
+    min-height: auto;
+  }
+  .svc-title-wrap p {
+    max-width: 100%;
+    white-space: normal;
+  }
+  .studio-barbers-grid {
+    grid-template-columns: 1fr !important;
+    gap: .75rem;
+    padding: 0;
+    margin: 0;
+  }
+  .studio-barber-card {
+    padding: .9rem 1rem;
+  }
+  .studio-date-strip {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: .4rem;
+    display: flex;
+    gap: .45rem;
+    scrollbar-width: none;
+  }
+  .studio-date-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .studio-slots-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: .45rem;
+    padding: 0;
+    margin: 0;
+  }
+  .slot-btn {
+    min-height: 42px;
+    font-size: .88rem;
+    padding: .5rem .2rem;
+  }
+  .studio-client-fields {
+    grid-template-columns: 1fr !important;
+    gap: .85rem;
+  }
+  .studio-client-input {
+    font-size: 16px !important; /* Prevents mobile iOS auto-zoom on input focus */
+    height: 48px;
+  }
+  .studio-canvas-footer {
+    display: none !important; /* Mobile uses the fixed bottom dock */
+  }
+
+  /* MOBILE FIXED BOTTOM DOCK (DOSSIER) */
   .booking-studio-dossier {
-    height: auto;
-    border-left: 0;
-    border-top: 1px solid #2a2a26;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 100 !important;
+    height: auto !important;
+    max-height: 80vh !important;
+    background: #121210 !important;
+    color: var(--bone) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.5) !important;
+    padding: .65rem 1rem env(safe-area-inset-bottom, .65rem) !important;
+    border-left: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+  .dossier-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .dossier-header,
+  .dossier-entries {
+    display: none !important;
+  }
+  .dossier-footer {
+    border-top: 0 !important;
+    padding-top: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: .45rem !important;
+  }
+  .dossier-totals-box {
+    margin-bottom: 0 !important;
+    padding: .2rem 0 .4rem !important;
+  }
+  .dossier-total-col .total-label {
+    font-size: .52rem;
+  }
+  .dossier-total-col .total-val {
+    font-size: .85rem;
+  }
+  .dossier-total-col .total-val-price {
+    font-size: 1.25rem;
+  }
+  .dossier-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: .4rem !important;
+  }
+  .dossier-primary-btn {
+    height: 48px !important;
+    font-size: .74rem !important;
+  }
+  .dossier-prev-btn {
+    padding: .35rem 0 !important;
+    font-size: .62rem !important;
   }
 }
 
@@ -3103,12 +3277,72 @@ img {
 }
 
 @media (max-width: 768px) {
+  .theme-success-viewport {
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+  }
+  .theme-success-header {
+    height: 52px;
+    min-height: 52px;
+    padding: 0 1rem;
+  }
+  .success-header-left {
+    gap: .7rem;
+  }
+  .success-back-link span {
+    display: none;
+  }
+  .theme-success-canvas {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 1.2rem 1rem 2.5rem !important;
+  }
+  .theme-success-wrapper {
+    width: 100%;
+    gap: 1rem;
+  }
+  .success-main-heading {
+    font-size: 2rem;
+  }
+  .ticket-top-dark {
+    padding: 1rem .9rem;
+  }
+  .ticket-top-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
   .ticket-ledger-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
     gap: .8rem;
   }
+  .ticket-bottom-bone {
+    padding: 1rem .9rem;
+    gap: .8rem;
+  }
+  .ticket-amenities-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .45rem;
+  }
   .ticket-actions-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: .5rem;
+  }
+  .ticket-btn {
+    height: 46px;
+    font-size: .7rem;
+  }
+  .theme-success-foot {
+    flex-direction: column;
+    gap: .5rem;
+    text-align: center;
+  }
+  .foot-sep {
+    display: none;
   }
 }
 
