@@ -97,28 +97,30 @@ html{scroll-padding-top:84px}body{min-width:320px}.home-v2,.services-v2,.barbers
 @media(max-width:760px){.journal-reader{padding:0}.journal-reader article{min-height:100dvh;max-height:none}.reader-image{aspect-ratio:4/3}.month-calendar{max-width:none}}
 
 /* ==========================================================================
-   HEADER AUTH & CLIENT FILE CONTROLS
+   HEADER AUTH & CLIENT FILE CONTROLS (SHARP & EDITORIAL)
    ========================================================================== */
 .header-auth-btn{
   border: 1px solid currentColor;
   background: transparent;
   color: inherit;
-  padding: .5rem .95rem;
-  font: 600 .68rem/1 var(--condensed);
-  letter-spacing: .12em;
+  padding: .45rem .85rem;
+  font: 700 .66rem/1 var(--condensed);
+  letter-spacing: .14em;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
-  gap: .45rem;
+  gap: .4rem;
   cursor: pointer;
-  transition: background .2s ease, color .2s ease, transform .2s ease;
+  border-radius: 2px;
+  transition: all .2s ease;
+  white-space: nowrap;
 }
 .header-auth-btn:hover{
   background: var(--ink);
   color: var(--bone);
 }
 .header-auth-btn.is-logged{
-  border-color: rgba(255,255,255,.3);
+  border-color: rgba(255,255,255,.35);
   background: rgba(0,0,0,.08);
 }
 .brand-header.solid .header-auth-btn.is-logged{
@@ -128,6 +130,67 @@ html{scroll-padding-top:84px}body{min-width:320px}.home-v2,.services-v2,.barbers
 .header-auth-btn.is-logged:hover{
   background: var(--ink);
   color: var(--bone);
+}
+
+@media (max-width: 768px) {
+  .brand-header {
+    height: 56px !important;
+    padding: 0 1rem !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  .brand-mark {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: .2rem !important;
+  }
+  .brand-mark b {
+    font-size: .56rem !important;
+    transform: translateY(-6px) !important;
+  }
+  .brand-mark strong {
+    font-size: 1.05rem !important;
+    letter-spacing: -.03em !important;
+  }
+  .header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: .45rem !important;
+  }
+  .header-auth-btn {
+    height: 32px !important;
+    padding: 0 .6rem !important;
+    font-size: .58rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .12em !important;
+    border: 1px solid currentColor !important;
+    border-radius: 2px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: .3rem !important;
+    white-space: nowrap !important;
+  }
+  .menu-trigger {
+    height: 32px !important;
+    padding: 0 .6rem !important;
+    font-size: .58rem !important;
+    font-weight: 700 !important;
+    letter-spacing: .12em !important;
+    border: 1px solid currentColor !important;
+    border-radius: 2px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: .3rem !important;
+    white-space: nowrap !important;
+  }
+  .menu-trigger i {
+    font-size: .95rem !important;
+    line-height: 1 !important;
+    margin-top: -1px !important;
+  }
 }
 
 /* ==========================================================================

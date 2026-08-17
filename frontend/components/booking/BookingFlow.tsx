@@ -32,6 +32,7 @@ import { media } from "@/data/media";
 import type { Barber, Service } from "@/lib/types";
 import { useBooking } from "@/components/providers/BookingProvider";
 import { useAuth } from "@/components/providers/AuthProvider";
+import { usePublicData } from "@/components/providers/PublicDataProvider";
 
 const steps = [
   ["01", "SERVICE"],
@@ -47,40 +48,48 @@ const slide = {
   exit: (dir: number) => ({ x: dir > 0 ? -30 : 30, opacity: 0 })
 };
 
-const addonOptions: Service[] = [
+const addonOptions = [
   {
-    _id: "addon-scalp",
-    slug: "scalp-treatment",
-    name: "Scalp Reset & Massage",
-    description: "Tea tree tonic & hot towel treatment.",
-    duration: 15,
-    price: 15
-  },
-  {
-    _id: "addon-towel",
-    slug: "hot-towel-finish",
-    name: "Aromatherapy Hot Towel",
-    description: "Steam eucalyptus & grooming oil.",
+    _id: "addon-beard-oil",
+    name: "Hot Towel & Botanical Beard Oil",
     duration: 10,
-    price: 10
+    price: 12,
+    slug: "botanical-beard-oil",
+    description: "Deep steam treatment followed by cold-pressed cedar & bergamot tonic."
   },
   {
-    _id: "addon-grey",
-    slug: "grey-blending",
-    name: "Grey Soft Blend",
-    description: "Subtle demi-permanent blending.",
-    duration: 20,
-    price: 22
+    _id: "addon-scalp-treatment",
+    name: "Purifying Clay Scalp Detox",
+    duration: 15,
+    price: 18,
+    slug: "scalp-detox",
+    description: "Exfoliating mineral treatment to stimulate follicle microcirculation."
+  },
+  {
+    _id: "addon-charcoal-mask",
+    name: "Activated Charcoal Face Compress",
+    duration: 10,
+    price: 14,
+    slug: "charcoal-compress",
+    description: "Deep pore purification and chilled rosewater toning compress."
   }
 ];
 
 export function BookingFlow() {
   const b = useBooking();
   const { user, client, login, register: registerClient } = useAuth();
+  const { services: publicServices, barbers: publicBarbers } = usePublicData();
+
+  const services = useMemo(() => {
+    return publicServices?.length ? publicServices : (localServices as Service[]);
+  }, [publicServices]);
+
+  const barbers = useMemo(() => {
+    return publicBarbers?.length ? publicBarbers : (localBarbers as Barber[]);
+  }, [publicBarbers]);
+
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
-  const [services, setServices] = useState<Service[]>(localServices as Service[]);
-  const [barbers, setBarbers] = useState<Barber[]>(localBarbers as Barber[]);
   const [slots, setSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"first" | "choose">("choose");
@@ -111,15 +120,6 @@ export function BookingFlow() {
       if (client?.phone) setValue("phone", client.phone);
     }
   }, [user, client, setValue]);
-
-  useEffect(() => {
-    api<any>("/public/bootstrap")
-      .then((d) => {
-        if (d.services?.length) setServices(d.services);
-        if (d.barbers?.length) setBarbers(d.barbers);
-      })
-      .catch(() => {});
-  }, []);
 
   // Open auth gate when entering Step 5 if user is not authenticated and has not chosen guest
   useEffect(() => {
@@ -398,10 +398,12 @@ export function BookingFlow() {
 
                   <div className="studio-service-grid">
                     {services.map((s, i) => {
-                      const isSelected = b.service?._id === s._id;
+                      const isSelected = Boolean(
+                        b.service && (b.service._id === s._id || (s.slug && b.service.slug === s.slug) || b.service.name === s.name)
+                      );
                       return (
                         <button
-                          key={s._id}
+                          key={s._id || s.slug || `svc-${i}`}
                           type="button"
                           className={`studio-service-card ${isSelected ? "selected" : ""}`}
                           onClick={() => b.setService(s)}
@@ -438,13 +440,13 @@ export function BookingFlow() {
                     </div>
                     <div className="studio-addons-row">
                       {addonOptions.map((addon) => {
-                        const isAdded = b.addons.some((x) => x._id === addon._id);
+                        const isAdded = b.addons.some((x) => x._id === addon._id || x.name === addon.name);
                         return (
                           <button
                             key={addon._id}
                             type="button"
                             className={`studio-addon-pill ${isAdded ? "is-added" : ""}`}
-                            onClick={() => b.toggleAddon(addon)}
+                            onClick={() => b.toggleAddon(addon as any)}
                           >
                             <div className="addon-pill-content">
                               <span className="addon-pill-name">{addon.name}</span>
@@ -499,7 +501,7 @@ export function BookingFlow() {
                     {/* FASTEST OPENING ROW */}
                     <button
                       type="button"
-                      className={`studio-first-available-card ${b.barber?._id === barbers[0]?._id && mode === "first" ? "selected" : ""}`}
+                      className={`studio-first-available-card ${mode === "first" && b.barber ? "selected" : ""}`}
                       onClick={() => {
                         setMode("first");
                         b.setBarber(barbers[0]);
@@ -511,17 +513,19 @@ export function BookingFlow() {
                         <span className="fa-tag">EARLIEST OPENING</span>
                       </div>
                       <span className="fa-action">
-                        {b.barber?._id === barbers[0]?._id && mode === "first" ? "✓ SELECTED" : "CHOOSE FIRST OPENING"}
+                        {mode === "first" && b.barber ? "✓ SELECTED" : "CHOOSE FIRST OPENING"}
                       </span>
                     </button>
 
                     {/* 4 BARBERS ROW */}
                     <div className="studio-barber-grid">
                       {barbers.map((barber, i) => {
-                        const isSelected = b.barber?._id === barber._id && mode !== "first";
+                        const isSelected = Boolean(
+                          b.barber && (b.barber._id === barber._id || (barber.slug && b.barber.slug === barber.slug) || b.barber.name === barber.name) && mode !== "first"
+                        );
                         return (
                           <button
-                            key={barber._id}
+                            key={barber._id || barber.slug || `barber-${i}`}
                             type="button"
                             className={`studio-barber-card ${isSelected ? "selected" : ""}`}
                             onClick={() => {

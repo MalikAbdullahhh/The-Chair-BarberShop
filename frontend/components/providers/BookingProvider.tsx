@@ -33,19 +33,22 @@ const initial: State = {
   notes: ""
 };
 
+function getInitialState(): State {
+  if (typeof window === "undefined") return initial;
+  try {
+    const v = localStorage.getItem("thechair_booking_v2");
+    if (v) {
+      const parsed = JSON.parse(v);
+      return { ...initial, ...parsed };
+    }
+  } catch {}
+  return initial;
+}
+
 export function BookingProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<State>(initial);
+  const [state, setState] = useState<State>(getInitialState);
 
-  useEffect(() => {
-    try {
-      const v = localStorage.getItem("thechair_booking_v2");
-      if (v) {
-        const parsed = JSON.parse(v);
-        setState((prev) => ({ ...prev, ...parsed }));
-      }
-    } catch {}
-  }, []);
-
+  // Sync state changes to localStorage
   useEffect(() => {
     try {
       localStorage.setItem("thechair_booking_v2", JSON.stringify(state));
