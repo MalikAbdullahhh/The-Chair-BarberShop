@@ -2532,7 +2532,7 @@ img {
 }
 
 /* ==========================================================================
-   BOOKING STUDIO MOBILE & TABLET RESPONSIVE SYSTEM
+   BOOKING STUDIO MOBILE & TABLET RESPONSIVE SYSTEM (PROFESSIONAL LUXURY)
    ========================================================================== */
 @media (max-width: 900px) {
   .booking-studio-viewport {
@@ -2542,37 +2542,54 @@ img {
     overflow-y: auto !important;
     display: flex !important;
     flex-direction: column !important;
+    background: var(--paper) !important;
   }
+
+  /* MOBILE TOP BAR */
   .booking-studio-topbar {
-    padding: 0 1rem;
-    height: 52px;
-    position: sticky;
-    top: 0;
-    z-index: 90;
+    padding: 0 .9rem !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 90 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background: var(--bone) !important;
+    border-bottom: 1px solid var(--line) !important;
   }
   .booking-top-brand {
-    gap: .7rem;
+    gap: .6rem !important;
   }
   .booking-exit-link span {
-    display: none;
+    display: none !important;
   }
   .booking-step-pills {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    max-width: 58vw;
-    scrollbar-width: none;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 65vw !important;
+    scrollbar-width: none !important;
+    gap: .25rem !important;
   }
   .booking-step-pills::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
   .step-pill {
-    padding: .25rem .5rem;
-    font-size: .56rem;
-    white-space: nowrap;
+    padding: .25rem .45rem !important;
+    font-size: .56rem !important;
+    white-space: nowrap !important;
+  }
+  .step-pill-num {
+    width: 14px !important;
+    height: 14px !important;
+    font-size: .48rem !important;
   }
   .booking-top-user {
-    display: none;
+    display: none !important;
   }
+
+  /* MOBILE CANVAS BODY */
   .booking-studio-body {
     display: flex !important;
     flex-direction: column !important;
@@ -2580,13 +2597,13 @@ img {
     min-height: calc(100dvh - 52px) !important;
     max-height: none !important;
     overflow: visible !important;
-    padding-bottom: 120px !important; /* Space for mobile bottom booking dock */
+    padding-bottom: 125px !important; /* Generous breathing room above mobile dock */
   }
   .booking-studio-canvas {
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
-    padding: 1.2rem 1rem 1.5rem !important;
+    padding: 1.1rem .9rem 1.5rem !important;
     justify-content: flex-start !important;
   }
   .booking-step-content {
@@ -2599,70 +2616,248 @@ img {
     height: auto !important;
     max-height: none !important;
     overflow: visible !important;
-    gap: 1.2rem;
+    gap: 1.1rem !important;
     justify-content: flex-start !important;
   }
-  .studio-step-header h2 {
-    font-size: clamp(1.6rem, 5.5vw, 2.2rem);
+  .studio-step-header {
+    margin-bottom: 0 !important;
   }
+  .studio-step-eyebrow {
+    font-size: .56rem !important;
+  }
+  .studio-step-header h2 {
+    font-size: clamp(1.45rem, 5.2vw, 1.95rem) !important;
+    line-height: 1 !important;
+  }
+  .studio-step-subtext {
+    font-size: .8rem !important;
+    line-height: 1.35 !important;
+  }
+
+  /* STEP 1: SERVICE CARDS (MOBILE FULL WIDTH LIST) */
   .studio-service-grid {
     grid-template-columns: 1fr !important;
-    gap: .65rem;
-    padding: 0;
-    margin: 0;
+    gap: .6rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
   .studio-service-card {
-    padding: .9rem 1rem;
-    min-height: auto;
+    padding: .85rem .95rem !important;
+    min-height: auto !important;
+    border-radius: 3px !important;
+  }
+  .svc-index-num {
+    font-size: .56rem !important;
+  }
+  .svc-title-wrap h3 {
+    font-size: .98rem !important;
   }
   .svc-title-wrap p {
-    max-width: 100%;
-    white-space: normal;
+    max-width: 100% !important;
+    white-space: normal !important;
+    font-size: .72rem !important;
+    line-height: 1.25 !important;
   }
-  .studio-barbers-grid {
+  .svc-price-tag {
+    font-size: 1.15rem !important;
+  }
+
+  /* ADDONS SHELF (MOBILE) */
+  .studio-addons-shelf {
+    padding-top: .65rem !important;
+  }
+  .studio-addons-row {
     grid-template-columns: 1fr !important;
-    gap: .75rem;
-    padding: 0;
-    margin: 0;
+    gap: .5rem !important;
+  }
+  .studio-addon-pill {
+    padding: .65rem .85rem !important;
+    border-radius: 3px !important;
+  }
+
+  /* STEP 2: BARBERS (MOBILE HORIZONTAL TOUCH CARDS) */
+  .studio-barber-selector {
+    gap: .75rem !important;
+  }
+  .studio-first-available-card {
+    padding: .85rem 1rem !important;
+    border-radius: 3px !important;
+  }
+  .fa-left b {
+    font-size: .84rem !important;
+  }
+  .fa-tag {
+    display: none !important;
+  }
+  .fa-action {
+    font-size: .6rem !important;
+    white-space: nowrap !important;
+  }
+  .studio-barber-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: .65rem !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
   .studio-barber-card {
-    padding: .9rem 1rem;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: .9rem !important;
+    padding: .75rem .95rem !important;
+    min-height: 74px !important;
+    border-radius: 4px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    transform: none !important;
   }
-  .studio-date-strip {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: .4rem;
-    display: flex;
-    gap: .45rem;
-    scrollbar-width: none;
+  .studio-barber-card:hover {
+    transform: none !important;
   }
-  .studio-date-strip::-webkit-scrollbar {
-    display: none;
+  .studio-barber-card.selected {
+    transform: none !important;
+    background: var(--ink) !important;
+    color: var(--bone) !important;
+    border-color: var(--ink) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2) !important;
+  }
+  .barber-thumb-wrap {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    aspect-ratio: 1/1 !important;
+    margin-bottom: 0 !important;
+    border-radius: 4px !important;
+    position: relative !important;
+  }
+  .chair-tag {
+    left: 2px !important;
+    bottom: 2px !important;
+    font-size: .5rem !important;
+    padding: .15rem .35rem !important;
+  }
+  .barber-card-info {
+    flex: 1 !important;
+    min-width: 0 !important;
+    text-align: left !important;
+  }
+  .barber-card-info h3 {
+    font-size: 1.02rem !important;
+    margin: 0 0 .15rem !important;
+  }
+  .barber-card-info p {
+    font-size: .6rem !important;
+    margin: 0 !important;
+    opacity: .8 !important;
+  }
+  .barber-card-action {
+    border-top: 0 !important;
+    padding-top: 0 !important;
+    font-size: .62rem !important;
+    letter-spacing: .1em !important;
+    padding: .35rem .6rem !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border-radius: 3px !important;
+    white-space: nowrap !important;
+  }
+  .studio-barber-card.selected .barber-card-action {
+    border-color: #66bb6a !important;
+    color: #66bb6a !important;
+  }
+
+  /* STEP 3: DATES (MOBILE 4-COLUMN COMPACT GRID) */
+  .studio-dates-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: .4rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .studio-date-card {
+    padding: .55rem .2rem !important;
+    min-height: 58px !important;
+    border-radius: 3px !important;
+  }
+  .date-card-day-label {
+    font-size: .52rem !important;
+  }
+  .date-card-num {
+    font-size: 1.18rem !important;
+  }
+  .date-card-month {
+    font-size: .52rem !important;
+  }
+  .custom-date-toggle {
+    font-size: .62rem !important;
+    padding: .7rem .85rem !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* STEP 4: TIME SLOTS (MOBILE 4-COLUMN TOUCH GRID) */
+  .step-head-split {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: .6rem !important;
+  }
+  .studio-time-filters {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: .3rem !important;
+    width: 100% !important;
+    scrollbar-width: none !important;
+  }
+  .studio-time-filters::-webkit-scrollbar {
+    display: none !important;
+  }
+  .time-filter-btn {
+    padding: .35rem .65rem !important;
+    font-size: .58rem !important;
+    white-space: nowrap !important;
   }
   .studio-slots-grid {
     grid-template-columns: repeat(4, 1fr) !important;
-    gap: .45rem;
-    padding: 0;
-    margin: 0;
+    gap: .4rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
-  .slot-btn {
-    min-height: 42px;
-    font-size: .88rem;
-    padding: .5rem .2rem;
-  }
-  .studio-client-fields {
-    grid-template-columns: 1fr !important;
-    gap: .85rem;
-  }
-  .studio-client-input {
-    font-size: 16px !important; /* Prevents mobile iOS auto-zoom on input focus */
-    height: 48px;
-  }
-  .studio-canvas-footer {
-    display: none !important; /* Mobile uses the fixed bottom dock */
+  .studio-slot-pill {
+    min-height: 44px !important;
+    height: 44px !important;
+    font-size: .92rem !important;
+    border-radius: 3px !important;
   }
 
-  /* MOBILE FIXED BOTTOM DOCK (DOSSIER) */
+  /* STEP 5: CLIENT INTAKE DETAILS (MOBILE FULL WIDTH FORM) */
+  .studio-intake-form {
+    width: 100% !important;
+  }
+  .intake-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: .75rem !important;
+  }
+  .studio-field label {
+    font-size: .58rem !important;
+    margin-bottom: .25rem !important;
+  }
+  .studio-field input {
+    font-size: 16px !important; /* Prevents mobile iOS auto-zoom on input focus */
+    height: 48px !important;
+    padding: .8rem .95rem !important;
+    border-radius: 3px !important;
+  }
+  .client-attached-banner {
+    padding: .65rem .85rem !important;
+    font-size: .62rem !important;
+  }
+
+  /* IN-CANVAS FOOTER (HIDDEN ON MOBILE IN FAVOR OF FIXED DOCK) */
+  .studio-canvas-footer {
+    display: none !important;
+  }
+
+  /* MOBILE FIXED BOTTOM DOCK (STICKY DOSSIER) */
   .booking-studio-dossier {
     position: fixed !important;
     bottom: 0 !important;
@@ -2671,11 +2866,11 @@ img {
     z-index: 100 !important;
     height: auto !important;
     max-height: 80vh !important;
-    background: #121210 !important;
+    background: #111110 !important;
     color: var(--bone) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
     box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.5) !important;
-    padding: .65rem 1rem env(safe-area-inset-bottom, .65rem) !important;
+    padding: .6rem 1rem env(safe-area-inset-bottom, .6rem) !important;
     border-left: 0 !important;
     display: flex !important;
     flex-direction: column !important;
@@ -2697,33 +2892,59 @@ img {
     padding-top: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: .45rem !important;
+    gap: .4rem !important;
   }
   .dossier-totals-box {
     margin-bottom: 0 !important;
-    padding: .2rem 0 .4rem !important;
+    padding: .15rem 0 .35rem !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
   }
   .dossier-total-col .total-label {
-    font-size: .52rem;
+    font-size: .52rem !important;
   }
   .dossier-total-col .total-val {
-    font-size: .85rem;
+    font-size: .84rem !important;
   }
   .dossier-total-col .total-val-price {
-    font-size: 1.25rem;
+    font-size: 1.25rem !important;
   }
   .dossier-actions {
     display: grid !important;
     grid-template-columns: 1fr !important;
-    gap: .4rem !important;
+    gap: .35rem !important;
   }
   .dossier-primary-btn {
     height: 48px !important;
     font-size: .74rem !important;
+    letter-spacing: .12em !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: .5rem !important;
   }
   .dossier-prev-btn {
-    padding: .35rem 0 !important;
-    font-size: .62rem !important;
+    padding: .3rem 0 !important;
+    font-size: .6rem !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    justify-content: center !important;
+  }
+
+  /* CALENDAR MODAL (MOBILE) */
+  .theme-cal-card {
+    width: min(390px, 94vw) !important;
+    padding: 1.3rem 1.1rem 1.1rem !important;
+    gap: .9rem !important;
+  }
+  .cal-card-head h3 {
+    font-size: 1.25rem !important;
+  }
+  .cal-day-cell {
+    min-height: 38px !important;
+  }
+  .cal-day-num {
+    font-size: .85rem !important;
   }
 }
 
