@@ -1070,6 +1070,15 @@ export function BookingFlow() {
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
+              <button
+                type="button"
+                className="gate-close-btn"
+                onClick={() => setAuthGateOpen(false)}
+                aria-label="Close modal"
+              >
+                <X size={16} />
+              </button>
+
               {authGateTab === "choose" && (
                 <div className="gate-choose-pane">
                   <div className="gate-header">

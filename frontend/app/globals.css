@@ -2410,35 +2410,66 @@ img {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(16,16,15,0.82);
-  backdrop-filter: blur(10px);
+  background: rgba(16, 16, 15, 0.82);
+  backdrop-filter: blur(12px);
   display: grid;
   place-items: center;
-  padding: 4vw;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 .auth-gate-modal-card {
   width: min(680px, 94vw);
+  max-height: 90vh;
+  max-height: 90dvh;
+  overflow-y: auto;
   background: var(--paper);
   border: 1px solid var(--ink);
-  box-shadow: 0 30px 90px rgba(0,0,0,0.35);
-  padding: 2.5rem;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45);
+  padding: clamp(1.4rem, 3.5vw, 2.4rem);
   box-sizing: border-box;
+  position: relative;
+  border-radius: 4px;
+}
+.gate-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  border: 1px solid var(--line);
+  background: var(--bone);
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .2s ease;
+  z-index: 10;
+}
+.gate-close-btn:hover {
+  background: var(--ink);
+  color: var(--bone);
 }
 .gate-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
+  padding-right: 2.2rem;
 }
 .gate-eyebrow {
   font: 700 .62rem/1 var(--condensed);
   letter-spacing: .16em;
   color: var(--muted);
+  display: block;
+  margin-bottom: .25rem;
 }
 .gate-header h3 {
-  font: 700 clamp(1.6rem, 2.8vw, 2.2rem)/.9 var(--sans);
+  font: 700 clamp(1.4rem, 2.5vw, 2rem)/.95 var(--sans);
   letter-spacing: -.05em;
-  margin: .3rem 0 .5rem;
+  margin: .2rem 0 .4rem;
+  color: var(--ink);
 }
 .gate-header p {
-  font-size: .88rem;
+  font-size: .84rem;
   line-height: 1.4;
   color: #444;
   margin: 0;
@@ -2451,27 +2482,29 @@ img {
 .gate-option-card {
   border: 1px solid var(--line);
   background: var(--bone);
-  padding: 1.2rem;
+  padding: 1.2rem 1.1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: left;
   cursor: pointer;
-  min-height: 200px;
+  min-height: 180px;
   transition: all .25s ease;
+  border-radius: 3px;
 }
 .gate-option-card:hover, .gate-option-card.is-primary {
   background: var(--ink);
   color: var(--bone);
   border-color: var(--ink);
+  transform: translateY(-2px);
 }
 .gate-card-icon {
-  margin-bottom: .8rem;
+  margin-bottom: .7rem;
 }
 .gate-option-card b {
-  font: 700 .98rem/1.1 var(--sans);
+  font: 700 .95rem/1.1 var(--sans);
   display: block;
-  margin-bottom: .35rem;
+  margin-bottom: .3rem;
 }
 .gate-option-card p {
   font-size: .74rem;
@@ -2482,7 +2515,7 @@ img {
 .gate-btn-badge {
   font: 700 .6rem/1 var(--condensed);
   letter-spacing: .12em;
-  margin-top: .8rem;
+  margin-top: .75rem;
   display: block;
 }
 .gate-back-btn {
@@ -2516,6 +2549,7 @@ img {
   background: #fff;
   padding: .75rem;
   font: 600 .88rem var(--sans);
+  border-radius: 2px;
 }
 .gate-submit-btn {
   border: 1px solid var(--ink);
@@ -2529,6 +2563,64 @@ img {
   align-items: center;
   cursor: pointer;
   margin-top: .4rem;
+  border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+  .auth-gate-backdrop {
+    padding: .85rem;
+    align-items: center;
+  }
+  .auth-gate-modal-card {
+    width: 100%;
+    max-height: 92vh;
+    max-height: 92dvh;
+    padding: 1.3rem 1.1rem;
+  }
+  .gate-header {
+    margin-bottom: 1rem;
+    padding-right: 2.2rem;
+  }
+  .gate-header h3 {
+    font-size: 1.35rem;
+  }
+  .gate-header p {
+    font-size: .78rem;
+  }
+  .gate-options-grid {
+    grid-template-columns: 1fr !important;
+    gap: .65rem !important;
+  }
+  .gate-option-card {
+    min-height: auto !important;
+    padding: 1rem !important;
+    transform: none !important;
+  }
+  .gate-option-card:hover {
+    transform: none !important;
+  }
+  .gate-card-icon {
+    margin-bottom: .4rem !important;
+  }
+  .gate-option-card b {
+    font-size: .92rem !important;
+    margin-bottom: .2rem !important;
+  }
+  .gate-option-card p {
+    font-size: .74rem !important;
+  }
+  .gate-btn-badge {
+    margin-top: .5rem !important;
+    font-size: .58rem !important;
+  }
+  .gate-field input {
+    font-size: 16px !important;
+    height: 48px !important;
+  }
+  .gate-submit-btn {
+    height: 48px !important;
+    font-size: .72rem !important;
+  }
 }
 
 /* ==========================================================================
