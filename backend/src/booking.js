@@ -1,10 +1,142 @@
-import { Appointment,AppointmentLock,Barber,Client,Service,Settings } from "./models.js"; import { dayKey,hmToMinutes,slotKeys,toLocalDateTime } from "./utils.js";
-export async function getAvailability({barberId,serviceId,date}){const [barber,service,settings]=await Promise.all([Barber.findById(barberId),Service.findById(serviceId),Settings.findOne({key:"global"})]);if(!barber||!barber.active)throw Object.assign(new Error("Barber not available"),{status:404});if(!service||!service.active)throw Object.assign(new Error("Service not available"),{status:404});if(barber.serviceIds?.length&&!barber.serviceIds.some(x=>String(x)===String(service._id)))return [];
-const base=new Date(`${date}T12:00:00`),key=dayKey(base),hours=barber.workingHours?.[key];if(!hours?.enabled)return [];const interval=settings?.bookingInterval||15,start=hmToMinutes(hours.start),end=hmToMinutes(hours.end);const dayStart=new Date(`${date}T00:00:00`),dayEnd=new Date(`${date}T23:59:59`);const locks=await AppointmentLock.find({barber:barberId,createdAt:{$lte:new Date(dayEnd.getTime()+7*86400000)}}).select("slotKey").lean();const locked=new Set(locks.map(x=>x.slotKey));const out=[];
-for(let m=start;m+service.duration<=end;m+=interval){const hh=String(Math.floor(m/60)).padStart(2,"0"),mm=String(m%60).padStart(2,"0"),slot=`${hh}:${mm}`,st=toLocalDateTime(date,slot),en=new Date(st.getTime()+service.duration*60000);if(st<new Date())continue;const off=(barber.timeOff||[]).some(x=>st<x.end&&en>x.start);if(off)continue;const conflict=slotKeys(st,en).some(k=>locked.has(k));if(!conflict)out.push(slot)}return out}
-export async function createAppointment({serviceId,barberId,date,time,clientData,source="web"}){const [service,barber,settings]=await Promise.all([Service.findById(serviceId),Barber.findById(barberId),Settings.findOne({key:"global"})]);if(!service?.active||!barber?.active)throw Object.assign(new Error("Service or barber unavailable"),{status:400});const available=await getAvailability({barberId,serviceId,date});if(!available.includes(time))throw Object.assign(new Error("That chair was just taken. Choose another time."),{status:409});
-let client=await Client.findOne({$or:[...(clientData.email?[{email:clientData.email.toLowerCase()}]:[]),...(clientData.phone?[{phone:clientData.phone}]:[])]});if(!client)client=await Client.create({name:clientData.name,email:clientData.email,phone:clientData.phone,notes:clientData.notes,onboarded:true,lastService:service._id});else{client.name=clientData.name||client.name;client.phone=clientData.phone||client.phone;client.lastService=service._id;if(clientData.notes)client.notes=[client.notes,clientData.notes].filter(Boolean).join("\n");await client.save()}
-const startAt=toLocalDateTime(date,time),endAt=new Date(startAt.getTime()+service.duration*60000),deposit=settings?.depositEnabled?settings.depositAmount||0:0;const appt=await Appointment.create({client:client._id,service:service._id,barber:barber._id,startAt,endAt,total:service.price,deposit,notes:clientData.notes,source,status:"pending"});const docs=slotKeys(startAt,endAt).map(slotKey=>({barber:barber._id,slotKey,appointment:appt._id}));try{await AppointmentLock.insertMany(docs,{ordered:true});appt.status="confirmed";await appt.save();return appt}catch(e){await AppointmentLock.deleteMany({appointment:appt._id});await Appointment.findByIdAndDelete(appt._id);if(e?.code===11000)throw Object.assign(new Error("That chair was just taken. Choose another time."),{status:409});throw e}}
-export async function cancelAppointment(id){const a=await Appointment.findById(id);if(!a)throw Object.assign(new Error("Appointment not found"),{status:404});a.status="cancelled";await a.save();await AppointmentLock.deleteMany({appointment:a._id});return a}
+import mongoose from "mongoose";
+import { Appointment, AppointmentLock, Barber, Client, Service, Settings } from "./models.js";
+import { dayKey, hmToMinutes, slotKeys, toLocalDateTime } from "./utils.js";
 
-export async function rescheduleAppointment(id,{serviceId,barberId,date,time}){const appt=await Appointment.findById(id);if(!appt)throw Object.assign(new Error("Appointment not found"),{status:404});if(appt.status==="cancelled")throw Object.assign(new Error("Cancelled appointments cannot be rescheduled"),{status:400});const [service,barber]=await Promise.all([Service.findById(serviceId||appt.service),Barber.findById(barberId||appt.barber)]);if(!service?.active||!barber?.active)throw Object.assign(new Error("Service or barber unavailable"),{status:400});const newStart=toLocalDateTime(date,time),newEnd=new Date(newStart.getTime()+service.duration*60000),key=dayKey(newStart),hours=barber.workingHours?.[key];if(!hours?.enabled)throw Object.assign(new Error("Barber is not working that day"),{status:400});const minute=newStart.getHours()*60+newStart.getMinutes();if(minute<hmToMinutes(hours.start)||minute+service.duration>hmToMinutes(hours.end))throw Object.assign(new Error("Time falls outside barber working hours"),{status:400});if((barber.timeOff||[]).some(x=>newStart<x.end&&newEnd>x.start))throw Object.assign(new Error("Barber is unavailable during that time"),{status:409});const oldLocks=await AppointmentLock.find({appointment:appt._id}).lean();const oldSet=new Set(oldLocks.map(x=>`${x.barber}:${x.slotKey}`));const newKeys=slotKeys(newStart,newEnd);const newComposite=newKeys.map(k=>`${barber._id}:${k}`);const add=newKeys.filter((k,i)=>!oldSet.has(newComposite[i]));const remove=oldLocks.filter(x=>!newComposite.includes(`${x.barber}:${x.slotKey}`));if(add.length){try{await AppointmentLock.insertMany(add.map(slotKey=>({barber:barber._id,slotKey,appointment:appt._id})),{ordered:true})}catch(e){await AppointmentLock.deleteMany({appointment:appt._id,barber:barber._id,slotKey:{$in:add}});if(e?.code===11000)throw Object.assign(new Error("That new time overlaps another appointment"),{status:409});throw e}}try{if(remove.length)await AppointmentLock.deleteMany({_id:{$in:remove.map(x=>x._id)}});appt.service=service._id;appt.barber=barber._id;appt.startAt=newStart;appt.endAt=newEnd;appt.total=service.price;await appt.save();return appt}catch(e){await AppointmentLock.deleteMany({appointment:appt._id,barber:barber._id,slotKey:{$in:add}});if(remove.length)await AppointmentLock.insertMany(remove.map(({barber,slotKey,appointment})=>({barber,slotKey,appointment})),{ordered:false}).catch(()=>{});throw e}}
+async function findService(idOrSlug) {
+  if (!idOrSlug) return null;
+  if (mongoose.Types.ObjectId.isValid(idOrSlug)) {
+    const s = await Service.findById(idOrSlug);
+    if (s) return s;
+  }
+  return await Service.findOne({ $or: [{ slug: idOrSlug }, { name: new RegExp(`^${idOrSlug}$`, "i") }] }).catch(() => null);
+}
+
+async function findBarber(idOrSlug) {
+  if (!idOrSlug) return null;
+  if (mongoose.Types.ObjectId.isValid(idOrSlug)) {
+    const b = await Barber.findById(idOrSlug);
+    if (b) return b;
+  }
+  return await Barber.findOne({ $or: [{ slug: idOrSlug }, { name: new RegExp(`^${idOrSlug}$`, "i") }, { chairNumber: idOrSlug }] }).catch(() => null);
+}
+
+export async function getAvailability({ barberId, serviceId, date }) {
+  const [barber, service, settings] = await Promise.all([
+    findBarber(barberId),
+    findService(serviceId),
+    Settings.findOne({ key: "global" })
+  ]);
+  if (!barber || !barber.active) throw Object.assign(new Error("Barber not available"), { status: 404 });
+  if (!service || !service.active) throw Object.assign(new Error("Service not available"), { status: 404 });
+  if (barber.serviceIds?.length && !barber.serviceIds.some((x) => String(x) === String(service._id))) return [];
+
+  const base = new Date(`${date}T12:00:00`), key = dayKey(base), hours = barber.workingHours?.[key];
+  if (!hours?.enabled) return [];
+  const interval = settings?.bookingInterval || 15, start = hmToMinutes(hours.start), end = hmToMinutes(hours.end);
+  const dayStart = new Date(`${date}T00:00:00`), dayEnd = new Date(`${date}T23:59:59`);
+  const locks = await AppointmentLock.find({ barber: barber._id, createdAt: { $lte: new Date(dayEnd.getTime() + 7 * 86400000) } }).select("slotKey").lean();
+  const locked = new Set(locks.map((x) => x.slotKey));
+  const out = [];
+
+  for (let m = start; m + service.duration <= end; m += interval) {
+    const hh = String(Math.floor(m / 60)).padStart(2, "0"), mm = String(m % 60).padStart(2, "0"), slot = `${hh}:${mm}`, st = toLocalDateTime(date, slot), en = new Date(st.getTime() + service.duration * 60000);
+    if (st < new Date()) continue;
+    const off = (barber.timeOff || []).some((x) => st < x.end && en > x.start);
+    if (off) continue;
+    const conflict = slotKeys(st, en).some((k) => locked.has(k));
+    if (!conflict) out.push(slot);
+  }
+  return out;
+}
+
+export async function createAppointment({ serviceId, barberId, date, time, clientData, source = "web" }) {
+  const [service, barber, settings] = await Promise.all([
+    findService(serviceId),
+    findBarber(barberId),
+    Settings.findOne({ key: "global" })
+  ]);
+  if (!service?.active || !barber?.active) throw Object.assign(new Error("Service or barber unavailable"), { status: 400 });
+  const available = await getAvailability({ barberId: barber._id, serviceId: service._id, date });
+  if (!available.includes(time)) throw Object.assign(new Error("That chair was just taken. Choose another time."), { status: 409 });
+
+  let client = await Client.findOne({ $or: [...(clientData.email ? [{ email: clientData.email.toLowerCase() }] : []), ...(clientData.phone ? [{ phone: clientData.phone }] : [])] });
+  if (!client) client = await Client.create({ name: clientData.name, email: clientData.email, phone: clientData.phone, notes: clientData.notes, onboarded: true, lastService: service._id });
+  else {
+    client.name = clientData.name || client.name;
+    client.phone = clientData.phone || client.phone;
+    client.lastService = service._id;
+    if (clientData.notes) client.notes = [client.notes, clientData.notes].filter(Boolean).join("\n");
+    await client.save();
+  }
+
+  const startAt = toLocalDateTime(date, time), endAt = new Date(startAt.getTime() + service.duration * 60000), deposit = settings?.depositEnabled ? settings.depositAmount || 0 : 0;
+  const appt = await Appointment.create({ client: client._id, service: service._id, barber: barber._id, startAt, endAt, total: service.price, deposit, notes: clientData.notes, source, status: "pending" });
+  const docs = slotKeys(startAt, endAt).map((slotKey) => ({ barber: barber._id, slotKey, appointment: appt._id }));
+  try {
+    await AppointmentLock.insertMany(docs, { ordered: true });
+    appt.status = "confirmed";
+    await appt.save();
+    return appt;
+  } catch (e) {
+    await AppointmentLock.deleteMany({ appointment: appt._id });
+    await Appointment.findByIdAndDelete(appt._id);
+    if (e?.code === 11000) throw Object.assign(new Error("That chair was just taken. Choose another time."), { status: 409 });
+    throw e;
+  }
+}
+
+export async function cancelAppointment(id) {
+  const a = await Appointment.findById(id);
+  if (!a) throw Object.assign(new Error("Appointment not found"), { status: 404 });
+  a.status = "cancelled";
+  await a.save();
+  await AppointmentLock.deleteMany({ appointment: a._id });
+  return a;
+}
+
+export async function rescheduleAppointment(id, { serviceId, barberId, date, time }) {
+  const appt = await Appointment.findById(id);
+  if (!appt) throw Object.assign(new Error("Appointment not found"), { status: 404 });
+  if (appt.status === "cancelled") throw Object.assign(new Error("Cancelled appointments cannot be rescheduled"), { status: 400 });
+  const [service, barber] = await Promise.all([
+    findService(serviceId || appt.service),
+    findBarber(barberId || appt.barber)
+  ]);
+  if (!service?.active || !barber?.active) throw Object.assign(new Error("Service or barber unavailable"), { status: 400 });
+  const newStart = toLocalDateTime(date, time), newEnd = new Date(newStart.getTime() + service.duration * 60000), key = dayKey(newStart), hours = barber.workingHours?.[key];
+  if (!hours?.enabled) throw Object.assign(new Error("Barber is not working that day"), { status: 400 });
+  const minute = newStart.getHours() * 60 + newStart.getMinutes();
+  if (minute < hmToMinutes(hours.start) || minute + service.duration > hmToMinutes(hours.end)) throw Object.assign(new Error("Time falls outside barber working hours"), { status: 400 });
+  if ((barber.timeOff || []).some((x) => newStart < x.end && newEnd > x.start)) throw Object.assign(new Error("Barber is unavailable during that time"), { status: 409 });
+
+  const oldLocks = await AppointmentLock.find({ appointment: appt._id }).lean();
+  const oldSet = new Set(oldLocks.map((x) => `${x.barber}:${x.slotKey}`));
+  const newKeys = slotKeys(newStart, newEnd);
+  const newComposite = newKeys.map((k) => `${barber._id}:${k}`);
+  const add = newKeys.filter((k, i) => !oldSet.has(newComposite[i]));
+  const remove = oldLocks.filter((x) => !newComposite.includes(`${x.barber}:${x.slotKey}`));
+
+  if (add.length) {
+    try {
+      await AppointmentLock.insertMany(add.map((slotKey) => ({ barber: barber._id, slotKey, appointment: appt._id })), { ordered: true });
+    } catch (e) {
+      await AppointmentLock.deleteMany({ appointment: appt._id, barber: barber._id, slotKey: { $in: add } });
+      if (e?.code === 11000) throw Object.assign(new Error("That new time overlaps another appointment"), { status: 409 });
+      throw e;
+    }
+  }
+  try {
+    if (remove.length) await AppointmentLock.deleteMany({ _id: { $in: remove.map((x) => x._id) } });
+    appt.service = service._id;
+    appt.barber = barber._id;
+    appt.startAt = newStart;
+    appt.endAt = newEnd;
+    appt.total = service.price;
+    await appt.save();
+    return appt;
+  } catch (e) {
+    await AppointmentLock.deleteMany({ appointment: appt._id, barber: barber._id, slotKey: { $in: add } });
+    if (remove.length) await AppointmentLock.insertMany(remove.map(({ barber, slotKey, appointment }) => ({ barber, slotKey, appointment })), { ordered: false }).catch(() => {});
+    throw e;
+  }
+}
