@@ -1,0 +1,3 @@
+"use client";
+import {useEffect,useState} from "react";
+export function Typewriter({words,speed=62,pause=950}:{words:string[];speed?:number;pause?:number}){const[index,setIndex]=useState(0);const[text,setText]=useState('');const[back,setBack]=useState(false);useEffect(()=>{const word=words[index]||'';const done=!back&&text===word;const empty=back&&text==='';const timer=setTimeout(()=>{if(done){setBack(true);return}if(empty){setBack(false);setIndex(i=>(i+1)%words.length);return}setText(back?word.slice(0,Math.max(0,text.length-1)):word.slice(0,text.length+1))},done?pause:empty?180:back?speed*.55:speed);return()=>clearTimeout(timer)},[text,back,index,words,speed,pause]);return <span className="typewriter">{text}<i aria-hidden>_</i></span>}

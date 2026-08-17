@@ -1,0 +1,1 @@
+"use client"; import { usePathname } from "next/navigation"; import { AdminShell } from "@/components/admin/AdminShell"; export default function Layout({children}:{children:React.ReactNode}){const p=usePathname();if(p==="/admin/login")return <>{children}</>;return <AdminShell>{children}</AdminShell>}

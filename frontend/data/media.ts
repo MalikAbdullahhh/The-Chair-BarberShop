@@ -1,0 +1,24 @@
+export const media={
+ hero:"https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=2400&q=90",
+ house:"https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=2200&q=88",
+ chair:"https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=1800&q=88",
+ tools:"https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?auto=format&fit=crop&w=1800&q=88",
+ detail:"https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?auto=format&fit=crop&w=1800&q=88",
+ exterior:"https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1900&q=88",
+ towel:"https://images.unsplash.com/photo-1621607512214-68297480165e?auto=format&fit=crop&w=1800&q=88",
+ wash:"https://images.unsplash.com/photo-1521490683712-35a1cb235d1c?auto=format&fit=crop&w=1800&q=88",
+ product:"https://images.unsplash.com/photo-1580618864180-f6d7d39b8ff6?auto=format&fit=crop&w=1600&q=88",
+ street:"https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=1800&q=88",
+ portraits:[
+ "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=88",
+ "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=88",
+ "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=88",
+ "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1200&q=88"],
+ looks:[
+ "https://images.unsplash.com/photo-1593702295094-aea22597af65?auto=format&fit=crop&w=1600&q=88",
+ "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=1600&q=88",
+ "https://images.unsplash.com/photo-1620122830785-a18b43585c43?auto=format&fit=crop&w=1600&q=88",
+ "https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&w=1600&q=88",
+ "https://images.unsplash.com/photo-1621607512022-6aecc4fed814?auto=format&fit=crop&w=1600&q=88",
+ "https://images.unsplash.com/photo-1620331311520-246422fd82f9?auto=format&fit=crop&w=1600&q=88"]
+};

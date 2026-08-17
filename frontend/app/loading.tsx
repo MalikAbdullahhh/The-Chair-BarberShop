@@ -1,0 +1,1 @@
+export default function Loading(){return <div className="route-loading"><div className="loading-name">THE CHAIR</div><div className="loading-rule"/><div className="loading-skeleton"><i/><i/><i/><i/></div></div>}

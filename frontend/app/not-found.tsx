@@ -1,0 +1,1 @@
+import Link from "next/link";export default function NotFound(){return <main className="not-found"><span>404 / WRONG TURN</span><h1>WRONG<br/><em>CHAIR.</em></h1><p>Nothing is booked here.</p><div><Link href="/">GO HOME </Link><Link href="/booking">BOOK A CHAIR </Link></div></main>}

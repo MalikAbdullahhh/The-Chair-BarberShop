@@ -1,0 +1,1 @@
+import type {Metadata} from "next";import {ServicesExperience} from "@/components/site/ServicesExperience";export const metadata:Metadata={title:'Services'};export default function Page(){return <ServicesExperience/>}

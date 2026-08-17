@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1400" role="img" aria-label="The Chair portrait placeholder">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#20211d"/><stop offset="1" stop-color="#0e0f0d"/></linearGradient></defs>
+  <rect width="1000" height="1400" fill="url(#g)"/>
+  <circle cx="500" cy="430" r="170" fill="#d8d1c4" fill-opacity=".14"/>
+  <path d="M205 1235C235 900 355 710 500 710S765 900 795 1235" fill="#d8d1c4" fill-opacity=".12"/>
+  <path d="M176 1180H824M245 1080H755M320 980H680" stroke="#f3efe6" stroke-opacity=".09"/>
+  <text x="80" y="1300" fill="#f3efe6" font-family="Arial, sans-serif" font-size="42" font-weight="700" letter-spacing="9">THE CHAIR</text>
+  <text x="82" y="1348" fill="#99958c" font-family="Arial, sans-serif" font-size="18" letter-spacing="7">PORTRAIT STUDY</text>
+</svg>

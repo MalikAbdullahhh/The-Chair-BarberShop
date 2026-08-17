@@ -1,0 +1,1 @@
+import type {Metadata} from "next";import {BarbersExperience} from "@/components/site/BarbersExperience";export const metadata:Metadata={title:'Barbers'};export default function Page(){return <BarbersExperience/>}

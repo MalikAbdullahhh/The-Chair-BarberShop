@@ -1,0 +1,4 @@
+"use client";
+import {motion} from "framer-motion";
+export function RevealText({children,className="",delay=0}:{children:string;className?:string;delay?:number}){return <span className={`reveal-text ${className}`} aria-label={children}>{children.split(" ").map((word,i)=><span className="reveal-word-mask" key={`${word}-${i}`}><motion.span initial={{y:"115%",rotate:2}} whileInView={{y:0,rotate:0}} viewport={{once:true,amount:.6}} transition={{duration:.72,delay:delay+i*.045,ease:[.2,.8,.2,1]}}>{word}&nbsp;</motion.span></span>)}</span>}
+export function RevealLines({lines}:{lines:string[]}){return <>{lines.map((line,i)=><span className="display-line" key={line}><motion.span initial={{y:"108%"}} whileInView={{y:0}} viewport={{once:true}} transition={{duration:.8,delay:i*.08,ease:[.16,1,.3,1]}}>{line}</motion.span></span>)}</>}
