@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Bodoni_Moda, Barlow_Condensed } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
+import "./mobile-fixes.css";
 import { BookingProvider } from "@/components/providers/BookingProvider";
 import { AppChrome } from "@/components/providers/AppChrome";
 import { PublicDataProvider } from "@/components/providers/PublicDataProvider";
@@ -12,8 +13,8 @@ const sans=Manrope({subsets:['latin'],variable:'--font-sans'});const serif=Bodon
 export const metadata:Metadata={title:{default:'THE CHAIR — Time, Protected.',template:'%s — THE CHAIR'},description:'A private grooming experience built around your time.'};
 export default function RootLayout({children}:{children:React.ReactNode}){
   return (
-    <html lang="en">
-      <body className={`${sans.variable} ${serif.variable} ${condensed.variable}`}>
+    <html lang="en" className={`${sans.variable} ${serif.variable} ${condensed.variable}`}>
+      <body>
         <AuthProvider>
           <BookingProvider>
             <PublicDataProvider>
