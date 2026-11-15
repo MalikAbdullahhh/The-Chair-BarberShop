@@ -7,7 +7,9 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 const allowedOrigins = [
   config.frontend,
   "http://localhost:3000",
-  "http://localhost:3001"
+  "http://localhost:3001",
+  // Extra exact origins, comma-separated (e.g. the custom domain alongside the workers.dev address).
+  ...(process.env.EXTRA_CORS_ORIGINS || "").split(",").map((o) => o.trim()).filter(Boolean)
 ];
 
 app.use(cors({
